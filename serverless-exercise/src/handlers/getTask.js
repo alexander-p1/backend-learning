@@ -4,15 +4,14 @@ exports.handler = async (event) => {
   try {
     const { id } = event.pathParameters;
 
-    // Kolla om task existerar först
-    const getParams = {
+    const params = {
       TableName: TASKS_TABLE,
       Key: { id }
     };
 
-    const existingTask = await dynamodb.get(getParams).promise();
+    const result = await dynamodb.get(params).promise();
     
-    if (!existingTask.Item) {
+    if (!result.Item) {
       return {
         statusCode: 404,
         headers,
@@ -21,21 +20,11 @@ exports.handler = async (event) => {
         })
       };
     }
-
-    const params = {
-      TableName: TASKS_TABLE,
-      Key: { id }
-    };
-
-    await dynamodb.delete(params).promise();
     
     return {
       statusCode: 200,
       headers,
-      body: JSON.stringify({
-        message: 'Task togs bort framgångsrikt',
-        id
-      })
+      body: JSON.stringify(result.Item)
     };
   } catch (error) {
     console.error('Error:', error);
@@ -44,7 +33,7 @@ exports.handler = async (event) => {
       statusCode: 500,
       headers,
       body: JSON.stringify({
-        error: 'Kunde inte ta bort task',
+        error: 'Kunde inte hämta task',
         message: error.message
       })
     };

@@ -1,0 +1,22 @@
+{
+  "name": "swing-notes-api",
+  "version": "1.0.0",
+  "description": "API for managing notes with authentication",
+  "main": "index.js",
+  "scripts": {
+    "deploy": "serverless deploy",
+    "remove": "serverless remove",
+    "logs": "serverless logs -f",
+    "test": "jest"
+  },
+  "dependencies": {
+    "aws-sdk": "^2.1691.0",
+    "uuid": "^9.0.1"
+  },
+  "devDependencies": {
+    "serverless": "^3.38.0",
+    "jest": "^29.7.0"
+  },
+  "author": "",
+  "license": "MIT"
+}
