@@ -2,8 +2,7 @@ import middy from "@middy/core";
 import jsonBodyParser from "@middy/http-json-body-parser";
 import validator from "@middy/validator";
 import { transpileSchema } from "@middy/validator/transpile";
-import { createAccountSchema } from "../middlewares/schemas";
-import { create } from "domain";
+import { createAccountSchema } from "../middlewares/schemas/index.js";
 
 const lambdaHandler = (event) => {
   const account = event.body; // { username, email, password }

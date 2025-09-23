@@ -4,6 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "dev": "serverless-offline",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
@@ -15,6 +16,7 @@
     "@middy/http-error-handler": "^6.4.5",
     "@middy/http-json-body-parser": "^6.4.5",
     "@middy/validator": "^6.4.5",
+    "serverless": "^4.19.1",
     "serverless-offline": "^14.4.0"
   }
 }
