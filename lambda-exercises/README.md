@@ -1,0 +1,1 @@
+"arn:aws:dynamodb:eu-north-1:880385175572:table/booking-api-dev-bookings"

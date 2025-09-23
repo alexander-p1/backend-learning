@@ -1,0 +1,20 @@
+{
+  "name": "middy",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "module",
+  "dependencies": {
+    "@middy/core": "^6.4.5",
+    "@middy/http-error-handler": "^6.4.5",
+    "@middy/http-json-body-parser": "^6.4.5",
+    "@middy/validator": "^6.4.5",
+    "serverless-offline": "^14.4.0"
+  }
+}

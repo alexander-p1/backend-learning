@@ -1,0 +1,17 @@
+service: middy
+
+provider:
+  name: aws
+  runtime: nodejs22.x
+  region: eu-north-1
+
+functions:
+  createAccount:
+    handler: functions/createAccount/index.handler
+    events:
+      - http:
+          path: /signup
+          method: post 
+
+plugins:
+  - serverless-offline

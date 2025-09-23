@@ -1,0 +1,59 @@
+service: booking-api
+
+frameworkVersion: '4'
+package:
+  patterns:
+    - '!node_modules/**'
+    - 'src/**'
+    - 'dbClient.js'
+
+provider:
+  name: aws
+  runtime: nodejs22.x
+  region: eu-north-1 
+  stage: dev
+  environment:
+    BOOKINGS_TABLE: ${self:service}-${self:provider.stage}-bookings
+  iam:
+    role:
+      statements:
+        - Effect: Allow
+          Action:
+            - dynamodb:Query
+            - dynamodb:Scan
+            - dynamodb:GetItem
+            - dynamodb:PutItem
+            - dynamodb:UpdateItem
+            - dynamodb:DeleteItem
+          Resource: 
+            - Fn::GetAtt: [BookingsTable, Arn]
+
+functions:
+  updateBooking:
+    handler: src/handlers/updateBooking.handler
+    events:
+      - http:
+          path: bookings/{id}
+          method: patch
+          cors: true
+
+resources:
+  Resources:
+    BookingsTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: ${self:service}-${self:provider.stage}-bookings
+        BillingMode: PAY_PER_REQUEST
+        AttributeDefinitions:
+          - AttributeName: bookingId
+            AttributeType: S
+        KeySchema:
+          - AttributeName: bookingId
+            KeyType: HASH
+
+plugins:
+  - serverless-offline
+
+custom:
+  serverless-offline:
+    httpPort: 3000

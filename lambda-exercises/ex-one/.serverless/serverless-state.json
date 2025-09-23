@@ -1,0 +1,49 @@
+{
+  "service": {
+    "service": "my-lambda-service",
+    "serviceObject": {
+      "name": "my-lambda-service"
+    },
+    "provider": {
+      "name": "aws",
+      "stage": "dev",
+      "region": "us-east-1",
+      "versionFunctions": true,
+      "compiledCloudFormationTemplate": {
+        "AWSTemplateFormatVersion": "2010-09-09",
+        "Description": "The AWS CloudFormation template for this Serverless application",
+        "Resources": {},
+        "Outputs": {
+          "ServerlessDeploymentBucketName": {
+            "Value": "serverless-framework-deployments-us-east-1-e374a5ff-9a4c",
+            "Export": {
+              "Name": "sls-my-lambda-service-dev-ServerlessDeploymentBucketName"
+            }
+          }
+        }
+      }
+    },
+    "pluginsData": {},
+    "functions": {},
+    "configValidationMode": "warn",
+    "serviceFilename": "serverless",
+    "initialServerlessConfig": {
+      "service": "my-lambda-service",
+      "provider": {
+        "$ref": "$[\"service\"][\"provider\"]"
+      },
+      "name": "aws",
+      "runtime": "nodejs22.x",
+      "handler": "handler.js",
+      "functions": null,
+      "hello": null
+    },
+    "appId": null,
+    "orgId": null,
+    "layers": {}
+  },
+  "package": {
+    "artifactDirectoryName": "serverless/my-lambda-service/dev/1757755886006-2025-09-13T09:31:26.006Z",
+    "artifact": ""
+  }
+}
