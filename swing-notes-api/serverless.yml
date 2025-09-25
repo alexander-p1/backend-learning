@@ -2,13 +2,13 @@ service: swing-notes-api
 
 provider:
   name: aws
-  runtime: nodejs18.x
+  runtime: nodejs22.x
   region: eu-north-1
   stage: ${opt:stage, 'dev'}
   environment:
     NOTES_TABLE: ${self:service}-notes-${self:provider.stage}
     API_KEY: ${env:API_KEY, 'your-secret-api-key'}
-  
+
   iam:
     role:
       statements:
@@ -23,46 +23,34 @@ provider:
           Resource: "arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.NOTES_TABLE}"
 
 functions:
-  # Authorizer function
-  authorizer:
-    handler: src/authorizer.handler
-    
   # Notes functions
   getNotes:
     handler: src/handlers/getNotes.handler
     events:
       - http:
-          path: api/notes/{username}
+          path: api/notes/user/{username}
           method: get
-          authorizer: authorizer
-          cors: true
-          
+
   createNote:
     handler: src/handlers/createNote.handler
     events:
       - http:
-          path: api/notes/{username}
+          path: api/notes/
           method: post
-          authorizer: authorizer
-          cors: true
-          
+
   updateNote:
     handler: src/handlers/updateNote.handler
     events:
       - http:
           path: api/notes/{id}
           method: put
-          authorizer: authorizer
-          cors: true
-          
+
   deleteNote:
     handler: src/handlers/deleteNote.handler
     events:
       - http:
           path: api/notes/{id}
           method: delete
-          authorizer: authorizer
-          cors: true
 
 resources:
   Resources:
@@ -70,6 +58,7 @@ resources:
       Type: AWS::DynamoDB::Table
       Properties:
         TableName: ${self:provider.environment.NOTES_TABLE}
+        BillingMode: PAY_PER_REQUEST
         AttributeDefinitions:
           - AttributeName: id
             AttributeType: S
@@ -85,8 +74,17 @@ resources:
                 KeyType: HASH
             Projection:
               ProjectionType: ALL
-            BillingMode: PAY_PER_REQUEST
-        BillingMode: PAY_PER_REQUEST
 
 plugins:
   - serverless-offline
+  - serverless-dynamodb-local
+
+custom:
+  dynamodb:
+    stages:
+      - dev
+    start:
+      migrate: true
+      seed: false
+      port: 8000
+      inMemory: true

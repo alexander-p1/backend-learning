@@ -1,66 +1,42 @@
-const { v4: uuidv4 } = require('uuid');
-const { putItem, createResponse, validateNote, NOTES_TABLE } = require('../utils/dynamodb');
+import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
+import { DynamoDBDocumentClient, PutCommand } from "@aws-sdk/lib-dynamodb";
+import { v4 as uuidv4 } from "uuid";
+const client = new DynamoDBClient({
+  region: "eu-north-1",
+});
+const ddb = DynamoDBDocumentClient.from(client);
 
-exports.handler = async (event) => {
+export const handler = async (event) => {
   try {
-    console.log('Create note event:', JSON.stringify(event));
+    const { title, content } = JSON.parse(event.body);
 
-    const username = event.pathParameters.username;
-    
-    if (!username) {
-      return createResponse(400, {
-        error: 'Username is required in path parameters'
-      });
-    }
-
-    let noteData;
-    try {
-      noteData = JSON.parse(event.body);
-    } catch (parseError) {
-      return createResponse(400, {
-        error: 'Invalid JSON in request body'
-      });
-    }
-
-    // Add username to note data
-    noteData.username = username;
-
-    // Validate note data
-    const validationErrors = validateNote(noteData);
-    if (validationErrors.length > 0) {
-      return createResponse(400, {
-        error: 'Validation failed',
-        details: validationErrors
-      });
-    }
-
-    const now = new Date().toISOString();
     const note = {
       id: uuidv4(),
-      username: username,
-      title: noteData.title.trim(),
-      text: noteData.text.trim(),
-      createdAt: now,
-      modifiedAt: now
+      title,
+      content,
+      createdAt: new Date().toISOString(),
     };
 
-    const params = {
-      TableName: NOTES_TABLE,
-      Item: note
+    await ddb.send(
+      new PutCommand({
+        TableName: process.env.NOTES_TABLE,
+        Item: note,
+      })
+    );
+
+    return {
+      statusCode: 201,
+      headers: {
+        "Content-Type": "application/json",
+        "Access-Control-Allow-Origin": "*",
+      },
+      body: JSON.stringify(note),
     };
-
-    await putItem(params);
-
-    return createResponse(200, {
-      message: 'Note created successfully',
-      note: note
-    });
-
   } catch (error) {
-    console.error('Error creating note:', error);
-    return createResponse(500, {
-      error: 'Internal server error',
-      message: 'Could not create note'
-    });
+    console.error("Error creating note", error);
+    return {
+      statusCode: 500,
+      body: JSON.stringify({ error: "Couldn't create note" }),
+    };
   }
 };
