@@ -28,7 +28,7 @@ functions:
     handler: src/handlers/getNotes.handler
     events:
       - http:
-          path: api/notes/user/{username}
+          path: api/notes/
           method: get
 
   createNote:

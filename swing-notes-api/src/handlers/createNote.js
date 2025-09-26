@@ -24,13 +24,20 @@ export const handler = async (event) => {
       })
     );
 
+    const orderedNote = {
+      title: note.title,
+      content: note.content,
+      id: note.id,
+      createdAt: note.createdAt,
+    };
+
     return {
       statusCode: 201,
       headers: {
         "Content-Type": "application/json",
         "Access-Control-Allow-Origin": "*",
       },
-      body: JSON.stringify(note),
+      body: JSON.stringify(orderedNote),
     };
   } catch (error) {
     console.error("Error creating note", error);
